@@ -91,12 +91,12 @@ jobs:
       # CODE QUALITY: SonarCloud Analysis
       # ===========================================
       - name: SonarCloud Scan with Maven
-  run: mvn sonar:sonar \
-        -Dsonar.projectKey=nawreshichri-c_exam-devsecops \
-        -Dsonar.organization=nawreshichri-c \
-        -Dsonar.host.url=https://sonarcloud.io \
-        -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-
+        run: |
+          mvn sonar:sonar \
+            -Dsonar.projectKey=nawreshichri-c_exam-devsecops \
+            -Dsonar.organization=nawreshichri-c \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       # ===========================================
       # DOCKER: Build and Test
