@@ -1,0 +1,8 @@
+Flask
+Flask-Limiter
+bcrypt
+Flask-WTF
+Flask-Talisman
+pyotp
+qrcode
+python-dotenv

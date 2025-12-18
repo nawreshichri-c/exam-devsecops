@@ -1,0 +1,42 @@
+# Gitleaks ignore file
+# This file contains fingerprints of findings that should be ignored
+
+# =============================================================================
+# HISTORICAL TOKEN (Removed from current files, only in git history)
+# =============================================================================
+# SonarCloud token that was accidentally committed in SONAR_SECRETS.md
+# This has been removed from current files and is only in git history
+# The actual token is stored securely in GitHub Secrets
+2a75c6ffde125b80b85a9798656192ef92fc39b4:SONAR_SECRETS.md:generic-api-key:3
+2a75c6ffde125b80b85a9798656192ef92fc39b4:SONAR_SECRETS.md:generic-api-key:14
+
+# =============================================================================
+# DOCUMENTATION EXAMPLES (Fake tokens for testing/demonstration purposes)
+# =============================================================================
+# These are example tokens used in documentation to show users HOW to test Gitleaks
+# They are intentionally fake and used for educational purposes
+
+# Example token in SonarCloud setup guide
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:SONARCLOUD_SETUP.md:generic-api-key:71
+
+# Fake GitHub token examples for Gitleaks testing demonstration
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:setup-pipeline.bat:github-pat:109
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:FINAL_STATUS.md:github-pat:121
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:SECURITY_PIPELINE_GUIDE.md:github-pat:52
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:TESTING_GUIDE.md:github-pat:208
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:TESTING_GUIDE.md:github-pat:218
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:TESTING_GUIDE.md:github-pat:249
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:TESTING_GUIDE.md:github-pat:274
+
+# Example Docker Hub token format
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:CONFIGURE_SECRETS.md:generic-api-key:29
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:TESTING_GUIDE.md:generic-api-key:28
+
+# Example API key in code analysis documentation
+910e4411dd5ba7b624d5e687b225ffbb8b0ac1ac:SONARCLOUD_ANALYSIS.md:generic-api-key:573
+
+# =============================================================================
+# NOTE: All tokens above are either:
+# 1. Historical (removed from current code, stored securely in GitHub Secrets)
+# 2. Fake examples (ghp_1234..., dckr_pat_abc...) for testing documentation
+# =============================================================================

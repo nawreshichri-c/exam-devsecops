@@ -1,0 +1,30 @@
+# Prometheus Configuration File
+
+global:
+  scrape_interval: 15s      # Scrape metrics every 15 seconds
+  evaluation_interval: 15s  # Evaluate rules every 15 seconds
+  
+  # Attach these labels to any time series or alerts
+  external_labels:
+    monitor: 'democyber-monitor'
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          instance: 'prometheus'
+          environment: 'dev'
+
+  # Spring Boot Application Monitoring
+  - job_name: 'spring-boot-app'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+        labels:
+          application: 'democyber'
+          environment: 'dev'
+          instance: 'spring-boot-democyber'

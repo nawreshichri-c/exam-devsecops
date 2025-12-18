@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Résultats étudiants - Sécurisé</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            padding: 50px;
+        }
+
+        .box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #0b7dda;
+        }
+
+        button.secondary {
+            background: #757575;
+        }
+
+        button.secondary:hover {
+            background: #616161;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .status {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .error {
+            color: #f44336;
+        }
+
+        .success {
+            color: #4CAF50;
+        }
+
+        .info {
+            color: #2196F3;
+            font-size: 14px;
+            margin-top: 20px;
+            padding: 10px;
+            background: #E3F2FD;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h2>🔒 Consultation Sécurisée</h2>
+
+        <!-- Login Form -->
+        <div id="loginForm">
+            <p class="info">Veuillez vous authentifier pour consulter vos résultats</p>
+
+            <!-- Honeypot field (hidden) -->
+            <div style="display:none;">
+                <label for="website">Website</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
+            <input type="text" id="loginMatricule" placeholder="Entrez votre matricule">
+            <input type="text" id="loginNom" placeholder="Entrez votre nom">
+            <input type="password" id="loginPassword" placeholder="Entrez votre mot de passe">
+            <input type="text" id="loginTotp" placeholder="Code 2FA (TOTP)" maxlength="6">
+            <button onclick="login()">Se connecter</button>
+            <div id="loginMessage"></div>
+        </div>
+
+        <!-- Results Section (hidden until logged in) -->
+        <div id="resultsSection" class="hidden">
+            <div class="status">
+                ✓ Connecté: <span id="userName"></span>
+                <button class="secondary" onclick="logout()">Déconnexion</button>
+            </div>
+            <button onclick="viewResult()">Voir mon résultat</button>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication status on load
+        window.onload = function () {
+            checkAuthStatus();
+        };
+
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+
+                if (data.authenticated) {
+                    showResultsSection(data.nom);
+                } else {
+                    showLoginForm();
+                }
+            } catch (err) {
+                console.error('Error checking auth status:', err);
+                showLoginForm();
+            }
+        }
+
+        async function login() {
+            const matricule = document.getElementById('loginMatricule').value.trim();
+            const nom = document.getElementById('loginNom').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const totp = document.getElementById('loginTotp').value.trim();
+            const website = document.getElementById('website').value; // Honeypot
+            const messageDiv = document.getElementById('loginMessage');
+
+            if (!matricule || !nom || !password || !totp) {
+                messageDiv.innerHTML = '<p class="error">❌ Veuillez remplir tous les champs (y compris 2FA)</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ matricule, nom, password, totp, website })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.innerHTML = '<p class="success">✓ Connexion réussie!</p>';
+                    setTimeout(() => showResultsSection(data.nom), 500);
+                } else {
+                    messageDiv.innerHTML = `<p class="error">❌ ${data.error}</p>`;
+                }
+            } catch (err) {
+                messageDiv.innerHTML = '<p class="error">❌ Erreur de connexion</p>';
+                console.error('Login error:', err);
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+                showLoginForm();
+                document.getElementById('result').innerHTML = '';
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+        }
+
+        async function viewResult() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>⏳ Chargement...</p>';
+
+            try {
+                const response = await fetch('/api/result');
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `<p class="success">👤 ${data.nom}<br>📊 Note : ${data.note}</p>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ ${data.error}</p>`;
+                }
+            } catch (err) {
+                resultDiv.innerHTML = '<p class="error">❌ Erreur de chargement</p>';
+                console.error('Result error:', err);
+            }
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('loginMatricule').value = '';
+            document.getElementById('loginNom').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginTotp').value = '';
+            document.getElementById('loginMessage').innerHTML = '';
+        }
+
+        function showResultsSection(nom) {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+            document.getElementById('userName').textContent = nom;
+        }
+
+        // Handle Enter key
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                if (!document.getElementById('loginForm').classList.contains('hidden')) {
+                    login();
+                } else {
+                    viewResult();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
