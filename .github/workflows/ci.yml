@@ -90,16 +90,13 @@ jobs:
       # ===========================================
       # CODE QUALITY: SonarCloud Analysis
       # ===========================================
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5.0.0  # <-- CHANGER l'action
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.organization=${{ github.repository_owner }}  # <-- CHANGER
-            -Dsonar.projectKey=${{ github.repository }}  # <-- CHANGER
+      - name: SonarCloud Scan with Maven
+  run: mvn sonar:sonar \
+        -Dsonar.projectKey=nawreshichri-c_exam-devsecops \
+        -Dsonar.organization=nawreshichri-c \
+        -Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
 
       # ===========================================
       # DOCKER: Build and Test
