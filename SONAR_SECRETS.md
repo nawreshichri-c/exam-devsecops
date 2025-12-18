@@ -18,13 +18,13 @@ Value: [Your SonarCloud token from https://sonarcloud.io/account/security]
 ### SECRET 2: SONAR_ORGANIZATION
 ```
 Name:  SONAR_ORGANIZATION
-Value: haroun-gaida
+Value: nawreshichri-c
 ```
 
 ### SECRET 3: SONAR_PROJECT_KEY
 ```
 Name:  SONAR_PROJECT_KEY
-Value: Haroun-Gaida_exam-devsecops
+Value: nawreshichri-c_exam-devsecops
 ```
 
 ## ✅ After Adding
